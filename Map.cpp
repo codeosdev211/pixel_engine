@@ -26,7 +26,7 @@ int lvl_one[20][25] = {
 Map::Map() {
     dirt = TextureMng::load_texture("assets/dirt.png");
     grass = TextureMng::load_texture("assets/grass.png");
-    water = TextureMng::load_texture("assets/water.png");
+    sky = TextureMng::load_texture("assets/sky.png");
 
     load_map(lvl_one);
 
@@ -60,7 +60,7 @@ void Map::draw_map() {
             dest.y = row * 32;
             switch(type) {
                 case 0:
-                    TextureMng::draw_tile(water, src, dest);
+                    TextureMng::draw_tile(sky, src, dest);
                     break;
                 case 1:
                     TextureMng::draw_tile(grass, src, dest);
