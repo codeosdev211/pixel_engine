@@ -3,6 +3,7 @@
 
 #include "Components.hpp"
 #include "SDL2/SDL.h"
+#include "../TextureMng.hpp"
 
 class SpriteComponent: public Component {
 
@@ -21,18 +22,24 @@ public:
         texture = TextureMng::load_texture(path);
     }
 
+    ~SpriteComponent() {
+        SDL_DestroyTexture(texture);
+    }
+
     void init() override {
 
         transform = &entity->get_component<TransformComponent>();
 
         src_rect.x = src_rect.y = 0;
-        src_rect.w = src_rect.h = 32;
-        dest_rect.w = dest_rect.h = 64;
+        src_rect.w = transform->width;
+        src_rect.h = transform->height;
     }
 
     void update() override {
-        dest_rect.x = (int) transform->position.x;
-        dest_rect.y = (int) transform->position.y;
+        dest_rect.x = static_cast<int>(transform->position.x);
+        dest_rect.y = static_cast<int>(transform->position.y);
+        dest_rect.w = transform->width * transform->scale;
+        dest_rect.h = transform->height * transform->scale;
  
     }
 

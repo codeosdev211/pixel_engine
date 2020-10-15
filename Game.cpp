@@ -3,6 +3,7 @@
 #include "Map.hpp" 
 #include "ECS/Components.hpp"
 #include "Vector2D.hpp"
+#include "Collision.hpp"
 
 using namespace std; 
  
@@ -13,7 +14,7 @@ SDL_Event Game::event;
 
 Manager manager;
 auto& new_player(manager.add_entity());
-
+auto& wall(manager.add_entity());
 
 Game::Game() {
 }
@@ -46,9 +47,14 @@ void Game::init(const char *title, int x_pos, int y_pos, int width, int height, 
  
     map = new Map();
 
-    new_player.add_component<TransformComponent>();
+    new_player.add_component<TransformComponent>(2);
     new_player.add_component<SpriteComponent>("assets/darkshin.png");
     new_player.add_component<KeyboardController>();
+    new_player.add_component<ColliderComponent>("player");
+
+    wall.add_component<TransformComponent>(300.0f, 300.f, 20, 300, 1);
+    wall.add_component<SpriteComponent>("assets/dirt.png");
+    wall.add_component<ColliderComponent>("wall");
 
 }
 
@@ -63,12 +69,25 @@ void Game::handle_events() {
             break;
     }
  
-}
-
+} 
 
 void Game::update() { 
     manager.refresh();
     manager.update();   
+
+    if(Collision::aa_bb(new_player.get_component<ColliderComponent>().collider,
+        wall.get_component<ColliderComponent>().collider)) {
+            
+        // new_player.get_component<TransformComponent>().scale = 1;
+        new_player.get_component<TransformComponent>().velocity * -1;
+        cout << "wall Hit " << endl;
+    } else {
+        // new_player.get_component<TransformComponent>().scale = 2;
+        cout << "wall missed " << endl;
+    }
+
+    
+
 }
 
 void Game::render() {
