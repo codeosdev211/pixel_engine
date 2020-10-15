@@ -1,13 +1,11 @@
 #include "Game.hpp"
-#include "TextureMng.hpp"
-#include "GameObject.hpp"
-#include "Map.hpp"
-#include "ECS.hpp"
-#include "Components.hpp"
+#include "TextureMng.hpp" 
+#include "Map.hpp" 
+#include "ECS/Components.hpp"
+#include "Vector2D.hpp"
 
 using namespace std; 
-
-GameObject* player;
+ 
 Map* map;
 
 SDL_Renderer* Game::renderer = nullptr;
@@ -44,12 +42,11 @@ void Game::init(const char *title, int x_pos, int y_pos, int width, int height, 
 
         is_running = true;
     } 
-
-    player = new GameObject("assets/darkshin.png",0, 0);
+ 
     map = new Map();
 
-    new_player.add_component<PositionComponent>();
-    new_player.get_component<PositionComponent>().set_position(500, 500);
+    new_player.add_component<TransformComponent>();
+    new_player.add_component<SpriteComponent>("assets/darkshin.png");
 
 }
 
@@ -67,17 +64,19 @@ void Game::handle_events() {
 }
 
 
-void Game::update() {
-    player->update();
-    manager.update();
-    cout << new_player.get_component<PositionComponent>().x() << ", "<< new_player.get_component<PositionComponent>().y() <<endl;
+void Game::update() { 
+    manager.refresh();
+    manager.update();   
+    new_player.get_component<TransformComponent>().position.add(Vector2D(5, 0));
+ 
+
 }
 
 void Game::render() {
     SDL_RenderClear(renderer);
     // this is where we would add stuff (background first images on it)
-    map->draw_map();
-    player->render();
+    map->draw_map(); 
+    manager.draw();
     SDL_RenderPresent(renderer);
 }
 

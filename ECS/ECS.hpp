@@ -54,10 +54,11 @@ private:
 public:
     void update() {
         for(auto& comp: components) comp->update();
-        for(auto& comp: components) comp->draw();
     }
 
-    void draw() { }
+    void draw() {
+        for (auto &comp : components)comp->draw();
+     }
     bool is_active() const { return active; }
     void destroy() { active = false; }
 
