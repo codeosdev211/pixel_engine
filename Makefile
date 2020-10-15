@@ -1,0 +1,1 @@
+g++ *.cpp -w -lSDL2 -lSDL2_image -o game_loop
