@@ -9,6 +9,7 @@ using namespace std;
 Map* map;
 
 SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
 
 Manager manager;
 auto& new_player(manager.add_entity());
@@ -47,11 +48,12 @@ void Game::init(const char *title, int x_pos, int y_pos, int width, int height, 
 
     new_player.add_component<TransformComponent>();
     new_player.add_component<SpriteComponent>("assets/darkshin.png");
+    new_player.add_component<KeyboardController>();
 
 }
 
 void Game::handle_events() {
-    SDL_Event event;
+    
     SDL_PollEvent(&event);
     switch(event.type) {
         case SDL_QUIT:
@@ -67,9 +69,6 @@ void Game::handle_events() {
 void Game::update() { 
     manager.refresh();
     manager.update();   
-    new_player.get_component<TransformComponent>().position.add(Vector2D(5, 0));
- 
-
 }
 
 void Game::render() {
