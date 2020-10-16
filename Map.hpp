@@ -1,7 +1,7 @@
 #ifndef Map_hpp
 #define Map_hpp
-
-#include "Game.hpp"
+ 
+#include <string>
 
 class Map {
 
@@ -9,16 +9,9 @@ public:
     Map();
     ~Map();
 
-    void load_map(int lvl[20][25]);
-    void draw_map();
+    static void load_map(std::string path, int size_x, int size_y); 
 
-private:
-    SDL_Rect src, dest;
-    SDL_Texture *dirt, *grass, *sky;
-
-    int map[20][25];
-
-
+private: 
 };
 
 #endif

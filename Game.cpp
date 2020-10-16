@@ -12,9 +12,12 @@ Map* map;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
+std::vector<ColliderComponent*> Game::colliders;
+
 Manager manager;
 auto& new_player(manager.add_entity());
 auto& wall(manager.add_entity());
+ 
 
 Game::Game() {
 }
@@ -46,15 +49,15 @@ void Game::init(const char *title, int x_pos, int y_pos, int width, int height, 
     } 
  
     map = new Map();
-
+    Map::load_map("assets/map1.map", 16, 16);
     new_player.add_component<TransformComponent>(2);
     new_player.add_component<SpriteComponent>("assets/darkshin.png");
     new_player.add_component<KeyboardController>();
     new_player.add_component<ColliderComponent>("player");
 
-    wall.add_component<TransformComponent>(300.0f, 300.f, 20, 300, 1);
-    wall.add_component<SpriteComponent>("assets/dirt.png");
-    wall.add_component<ColliderComponent>("wall");
+    // wall.add_component<TransformComponent>(300.0f, 300.f, 20, 300, 1);
+    // wall.add_component<SpriteComponent>("assets/dirt.png");
+    // wall.add_component<ColliderComponent>("wall");
 
 }
 
@@ -75,25 +78,16 @@ void Game::update() {
     manager.refresh();
     manager.update();   
 
-    if(Collision::aa_bb(new_player.get_component<ColliderComponent>().collider,
-        wall.get_component<ColliderComponent>().collider)) {
-            
-        // new_player.get_component<TransformComponent>().scale = 1;
-        new_player.get_component<TransformComponent>().velocity * -1;
-        cout << "wall Hit " << endl;
-    } else {
-        // new_player.get_component<TransformComponent>().scale = 2;
-        cout << "wall missed " << endl;
+    for (auto collider: colliders) {
+        Collision::aa_bb(new_player.get_component<ColliderComponent>(), *collider);
     }
-
-    
-
+ 
 }
 
 void Game::render() {
     SDL_RenderClear(renderer);
     // this is where we would add stuff (background first images on it)
-    map->draw_map(); 
+    // map->draw_map(); 
     manager.draw();
     SDL_RenderPresent(renderer);
 }
@@ -105,4 +99,7 @@ void Game::clean() {
     cout << "Game Cleaned" << endl;
 }
 
-
+void Game::add_tile(int id, int x, int y) {
+    auto& tile(manager.add_entity());
+    tile.add_component<TileComponent>(x, y, 32, 32, id);
+}
