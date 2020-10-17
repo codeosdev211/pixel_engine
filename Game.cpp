@@ -18,6 +18,12 @@ Manager manager;
 auto& new_player(manager.add_entity());
 auto& wall(manager.add_entity());
  
+enum group_labels: std::size_t {
+    group_map,
+    group_players,
+    group_enemies,
+    group_colliders
+};
 
 Game::Game() {
 }
@@ -54,10 +60,12 @@ void Game::init(const char *title, int x_pos, int y_pos, int width, int height, 
     new_player.add_component<SpriteComponent>("assets/darkshin.png");
     new_player.add_component<KeyboardController>();
     new_player.add_component<ColliderComponent>("player");
+    new_player.add_group(group_players);
 
-    // wall.add_component<TransformComponent>(300.0f, 300.f, 20, 300, 1);
-    // wall.add_component<SpriteComponent>("assets/dirt.png");
-    // wall.add_component<ColliderComponent>("wall");
+    wall.add_component<TransformComponent>(300.0f, 300.f, 20, 300, 1);
+    wall.add_component<SpriteComponent>("assets/dirt.png");
+    wall.add_component<ColliderComponent>("wall");
+    wall.add_group(group_map);
 
 }
 
@@ -84,11 +92,23 @@ void Game::update() {
  
 }
 
+auto& tiles(manager.get_group(group_map));
+auto& players(manager.get_group(group_players));
+auto& enemies(manager.get_group(group_enemies));
+
+
 void Game::render() {
     SDL_RenderClear(renderer);
-    // this is where we would add stuff (background first images on it)
-    // map->draw_map(); 
-    manager.draw();
+    for(auto& tile: tiles) {
+        tile->draw();
+    }
+    for(auto& plyr: players) {
+        plyr->draw();
+    }
+    for(auto& enemy: enemies) {
+        enemy->draw();
+    }
+
     SDL_RenderPresent(renderer);
 }
 
@@ -102,4 +122,5 @@ void Game::clean() {
 void Game::add_tile(int id, int x, int y) {
     auto& tile(manager.add_entity());
     tile.add_component<TileComponent>(x, y, 32, 32, id);
+    tile.add_group(group_map);
 }
