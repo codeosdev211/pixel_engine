@@ -54,10 +54,10 @@ void Game::init(const char *title, int x_pos, int y_pos, int width, int height, 
         is_running = true;
     } 
  
-    map = new Map();
+    //map = new Map();
     Map::load_map("assets/map1.map", 16, 16);
     new_player.add_component<TransformComponent>(2);
-    new_player.add_component<SpriteComponent>("assets/darkshin.png");
+    new_player.add_component<SpriteComponent>("assets/mario_anim.png", true);
     new_player.add_component<KeyboardController>();
     new_player.add_component<ColliderComponent>("player");
     new_player.add_group(group_players);
