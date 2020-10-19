@@ -2,50 +2,36 @@
 #define TileComponent_hpp
 
 #include "ECS.hpp"
-#include "TransformComponent.hpp"
 #include "SDL2/SDL.h"
 
 class TileComponent: public Component {
 
 public:
-    TransformComponent *transform;
-    SpriteComponent *sprite;
-    char* path;
-
-    SDL_Rect tile_rect;
-    int tile_id;
+    
+    SDL_Texture* texture;
+    SDL_Rect src_rect, dest_rect;
 
     TileComponent() = default;
 
-    TileComponent(int x, int y, int w, int h, int id) {
-        tile_rect.x = x;
-        tile_rect.y = y;
-        tile_rect.w = w;
-        tile_rect.h = h;
-        tile_id = id;
-
-        switch(tile_id) {
-            case 0:
-                path = "assets/dirt.png"; break;
-            case 1:
-                path = "assets/grass.png"; break;
-            case 2:
-                path = "assets/sky.png"; break;
-            default: 
-                break;
-        }
-
+    ~TileComponent() {
+        SDL_DestroyTexture(texture);
     }
 
-    void init() override { 
-        entity->add_component<TransformComponent>((float) tile_rect.x, (float) tile_rect.y, tile_rect.w, tile_rect.h, 1);
-        transform = &entity->get_component<TransformComponent>();
+    TileComponent(int text_x, int text_y, int text_pos_x, int text_pos_y, const char* path) {
+        texture = TextureMng::load_texture(path);
 
-        entity->add_component<SpriteComponent>(path);
-        sprite = &entity->get_component<SpriteComponent>();
+        src_rect.x = text_x;
+        src_rect.y = text_y;
+        src_rect.w = src_rect.h = 32;
+
+        dest_rect.x = text_pos_x;
+        dest_rect.y = text_pos_y;
+        dest_rect.w = dest_rect.h = 32;
     }
-        
 
+    void draw() override {
+        TextureMng::draw(texture, src_rect, dest_rect, SDL_FLIP_NONE);
+    };
 };
 
 #endif

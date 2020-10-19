@@ -22,7 +22,7 @@ public:
  
     bool running() { return is_running; }
 
-    static void add_tile(int id, int x, int y);
+    static void add_tile(int src_x, int src_y, int pos_x, int pos_y);
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static std::vector<ColliderComponent*> colliders;

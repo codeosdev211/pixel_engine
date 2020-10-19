@@ -17,6 +17,9 @@ std::vector<ColliderComponent*> Game::colliders;
 Manager manager;
 auto& new_player(manager.add_entity());
 auto& wall(manager.add_entity());
+
+const char* map_file = "assets/text_temp.png";
+
  
 enum group_labels: std::size_t {
     group_map,
@@ -55,17 +58,13 @@ void Game::init(const char *title, int x_pos, int y_pos, int width, int height, 
     } 
  
     //map = new Map();
-    Map::load_map("assets/map1.map", 16, 16);
+    Map::load_map("assets/map1.txt", 25, 20);
     new_player.add_component<TransformComponent>(2);
     new_player.add_component<SpriteComponent>("assets/mario_anim.png", true);
     new_player.add_component<KeyboardController>();
     new_player.add_component<ColliderComponent>("player");
     new_player.add_group(group_players);
 
-    wall.add_component<TransformComponent>(300.0f, 300.f, 20, 300, 1);
-    wall.add_component<SpriteComponent>("assets/dirt.png");
-    wall.add_component<ColliderComponent>("wall");
-    wall.add_group(group_map);
 
 }
 
@@ -119,8 +118,8 @@ void Game::clean() {
     cout << "Game Cleaned" << endl;
 }
 
-void Game::add_tile(int id, int x, int y) {
+void Game::add_tile(int src_x, int src_y, int x_pos, int y_pos) {
     auto& tile(manager.add_entity());
-    tile.add_component<TileComponent>(x, y, 32, 32, id);
+    tile.add_component<TileComponent>(src_x, src_y, x_pos, y_pos, map_file);
     tile.add_group(group_map);
 }

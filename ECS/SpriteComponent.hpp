@@ -75,7 +75,7 @@ public:
     }
 
     void draw() override {
-        TextureMng::draw_tile(texture, src_rect, dest_rect, sprite_flip);
+        TextureMng::draw(texture, src_rect, dest_rect, sprite_flip);
     }
 
     void play(const char* anim_name) {
